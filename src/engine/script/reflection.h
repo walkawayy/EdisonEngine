@@ -173,8 +173,8 @@ public:
                     bool flipRooms,
                     bool weaponSwap,
                     float cameraRot,
-                    int cameraPosX,
-                    int cameraPosZ)
+                    float cameraPosX,
+                    float cameraPosZ)
       : m_name{std::move(name)}
       , m_track{track}
       , m_flipRooms{flipRooms}

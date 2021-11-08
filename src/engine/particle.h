@@ -3,7 +3,9 @@
 #include "audio/emitter.h"
 #include "core/angle.h"
 #include "core/id.h"
+#include "core/magic.h"
 #include "core/units.h"
+#include "core/verlet.h"
 #include "engine/lighting.h"
 #include "items_tr1.h"
 #include "location.h"
@@ -42,8 +44,8 @@ public:
   Location location;
   core::TRRotation angle{};
   const core::TypeId object_number;
-  core::Speed speed = 0_spd;
-  core::Speed fall_speed = 0_spd;
+  core::Verlet speed{};
+  core::Verlet fall_speed{};
   int16_t negSpriteFrameId = 0;
   int16_t timePerSpriteFrame = 0;
 
@@ -123,7 +125,7 @@ public:
 class SplashParticle final : public Particle
 {
 public:
-  explicit SplashParticle(const Location& location, world::World& world, const bool waterfall);
+  explicit SplashParticle(const Location& location, world::World& world, bool waterfall);
 
   bool update(world::World& world) override;
 };
@@ -215,7 +217,7 @@ public:
   explicit MeshShrapnelParticle(const Location& location,
                                 world::World& world,
                                 const gsl::not_null<std::shared_ptr<render::scene::Renderable>>& renderable,
-                                const bool torsoBoss,
+                                bool torsoBoss,
                                 const core::Length& damageRadius);
 
   bool update(world::World& world) override;
@@ -270,7 +272,7 @@ public:
   explicit LavaParticle(const Location& location, world::World& world)
       : Particle{"lava", TR1ItemId::LavaParticles, location, world, true}
   {
-    angle.Y = util::rand15(180_deg) * 2;
+    angle.Y = util::rand15(360_deg);
     speed = util::rand15(32_spd);
     fall_speed = -util::rand15(165_spd);
     negSpriteFrameId = util::rand15(int16_t{-4});

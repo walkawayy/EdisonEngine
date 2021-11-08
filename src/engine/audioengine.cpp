@@ -82,11 +82,11 @@ void AudioEngine::triggerCdTrack(const script::ScriptEngine& scriptEngine,
     // LaraTalk24 "Right. Now I better take off these wet clothes"
     if(m_cdTrackActivationStates[trackId].isOneshot())
     {
-      m_cdTrack50time += 1_frame;
-      if(m_cdTrack50time == core::FrameRate * 4_sec)
+      m_cdTrack50time += 1_rframe;
+      if(m_cdTrack50time == (core::RenderFrameRate * 4_sec).cast<core::RenderFrame>())
       {
         m_world.finishLevel();
-        m_cdTrack50time = 0_frame;
+        m_cdTrack50time = 0_rframe;
         triggerNormalCdTrack(scriptEngine, trackId, activationRequest, triggerType);
       }
     }
@@ -431,7 +431,7 @@ void AudioEngine::init(const std::vector<loader::file::SoundEffectProperties>& s
     m_soundEffects[gsl::narrow<int>(i)] = &m_soundEffectProperties.at(soundEffects[i]);
   }
   m_cdTrackActivationStates.clear();
-  m_cdTrack50time = 0_frame;
+  m_cdTrack50time = 0_rframe;
   m_underwaterAmbience.reset();
   m_soundEngine->getDevice().removeStream(m_ambientStream);
   m_ambientStreamId.reset();

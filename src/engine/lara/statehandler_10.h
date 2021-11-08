@@ -15,7 +15,7 @@ public:
   {
   }
 
-  void handleInput(CollisionInfo& collisionInfo) override
+  void handleInput(CollisionInfo& collisionInfo, bool /*doPhysics*/) override
   {
     setCameraRotationAroundLara(-60_deg, 0_deg);
     collisionInfo.policies &= ~CollisionInfo::SpazPushPolicy;
@@ -30,9 +30,12 @@ public:
     }
   }
 
-  void postprocessFrame(CollisionInfo& collisionInfo) override
+  void postprocessFrame(CollisionInfo& collisionInfo, bool doPhysics) override
   {
-    commonEdgeHangHandling(collisionInfo);
+    commonEdgeHangHandling(collisionInfo, doPhysics);
+
+    if(!doPhysics)
+      return;
 
     if(getGoalAnimState() != LaraStateId::Hang)
     {

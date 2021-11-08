@@ -14,7 +14,7 @@ public:
   {
   }
 
-  void handleInput(CollisionInfo& /*collisionInfo*/) override
+  void handleInput(CollisionInfo& /*collisionInfo*/, bool /*doPhysics*/) override
   {
     setCameraModifier(CameraModifier::AllowSteepSlants);
     setCameraRotationAroundLaraX(-45_deg);
@@ -24,10 +24,10 @@ public:
     }
   }
 
-  void postprocessFrame(CollisionInfo& collisionInfo) override
+  void postprocessFrame(CollisionInfo& collisionInfo, bool doPhysics) override
   {
     setMovementAngle(getLara().m_state.rotation.Y);
-    commonSlideHandling(collisionInfo);
+    commonSlideHandling(collisionInfo, doPhysics);
   }
 };
 } // namespace engine::lara

@@ -61,7 +61,7 @@ public:
     const auto tmp = m_state.location.position.Y + getBridgeSlopeHeight(pos) / m_flatness;
     if(pos.Y > tmp)
       return;
-    
+
     y = tmp;
   }
 

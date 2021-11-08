@@ -14,7 +14,7 @@ public:
   {
   }
 
-  void handleInput(CollisionInfo& collisionInfo) override
+  void handleInput(CollisionInfo& collisionInfo, bool /*doPhysics*/) override
   {
     collisionInfo.policies &= ~CollisionInfo::SpazPushPolicy;
     setCameraRotationAroundLaraY(75_deg);

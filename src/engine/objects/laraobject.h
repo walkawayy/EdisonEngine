@@ -75,10 +75,10 @@ class LaraObject final : public ModelObject
 
 private:
   //! @brief Additional rotation per TR Engine Frame
-  core::RotationSpeed m_yRotationSpeed{0_deg / 1_frame};
+  core::RenderRotationSpeed m_yRotationSpeed{0_deg / 1_rframe};
   core::Speed m_fallSpeedOverride = 0_spd;
   core::Angle m_movementAngle{0_deg};
-  core::Frame m_air{core::LaraAir};
+  core::RenderFrame m_air{core::LaraAir};
   core::Angle m_currentSlideAngle{0_deg};
 
   HandStatus m_handStatus = HandStatus::None;
@@ -147,10 +147,10 @@ private:
   void handleLaraStateSwimming();
   void testInteractions(CollisionInfo& collisionInfo);
 
-  core::Frame m_swimToDiveKeypressDuration = 0_frame;
+  core::RenderFrame m_swimToDiveKeypressDuration = 0_rframe;
 
 public:
-  void setAir(const core::Frame& a) noexcept
+  void setAir(const core::RenderFrame& a) noexcept
   {
     m_air = a;
   }
@@ -177,7 +177,7 @@ public:
 
   void placeOnFloor(const CollisionInfo& collisionInfo);
 
-  void setYRotationSpeed(const core::RotationSpeed& spd)
+  void setYRotationSpeed(const core::RenderRotationSpeed& spd)
   {
     m_yRotationSpeed = spd;
   }
@@ -187,14 +187,18 @@ public:
     return m_yRotationSpeed;
   }
 
-  void subYRotationSpeed(const core::RotationAcceleration& val, const core::RotationSpeed& limit = -32768_au / 1_frame)
+  void subYRotationSpeed(const core::RenderRotationAcceleration& val,
+                         const core::RenderRotationSpeed& limit = -32768_au / 1_rframe)
   {
-    m_yRotationSpeed = std::max(m_yRotationSpeed - val * 1_frame, limit);
+    // TODO verlet?
+    m_yRotationSpeed = std::max(m_yRotationSpeed - val * 1_rframe, limit);
   }
 
-  void addYRotationSpeed(const core::RotationAcceleration& val, const core::RotationSpeed& limit = 32767_au / 1_frame)
+  void addYRotationSpeed(const core::RenderRotationAcceleration& val,
+                         const core::RenderRotationSpeed& limit = 32767_au / 1_rframe)
   {
-    m_yRotationSpeed = std::min(m_yRotationSpeed + val * 1_frame, limit);
+    // TODO verlet?
+    m_yRotationSpeed = std::min(m_yRotationSpeed + val * 1_rframe, limit);
   }
 
   void setFallSpeedOverride(const core::Speed& v)
@@ -241,17 +245,17 @@ public:
 
   void updateFloorHeight(const core::Length& dy);
 
-  void addSwimToDiveKeypressDuration(const core::Frame& n) noexcept
+  void addSwimToDiveKeypressDuration(const core::RenderFrame& n) noexcept
   {
     m_swimToDiveKeypressDuration += n;
   }
 
-  void setSwimToDiveKeypressDuration(const core::Frame& n) noexcept
+  void setSwimToDiveKeypressDuration(const core::RenderFrame& n) noexcept
   {
     m_swimToDiveKeypressDuration = n;
   }
 
-  core::Frame getSwimToDiveKeypressDuration() const noexcept
+  core::RenderFrame getSwimToDiveKeypressDuration() const noexcept
   {
     return m_swimToDiveKeypressDuration;
   }
@@ -271,14 +275,14 @@ public:
 
   void setCameraModifier(CameraModifier k);
 
-  void addHeadRotationX(const core::RotationSpeed& x, const core::Angle& minX, const core::Angle& maxX)
+  void addHeadRotationX(const core::RenderRotationSpeed& x, const core::Angle& minX, const core::Angle& maxX)
   {
-    m_headRotation.X = std::clamp(m_headRotation.X + x * 1_frame, minX, maxX);
+    m_headRotation.X = std::clamp(m_headRotation.X + x * 1_rframe, minX, maxX);
   }
 
-  void addHeadRotationY(const core::RotationSpeed& y, const core::Angle& minY, const core::Angle& maxY)
+  void addHeadRotationY(const core::RenderRotationSpeed& y, const core::Angle& minY, const core::Angle& maxY)
   {
-    m_headRotation.Y = std::clamp(m_headRotation.Y + y * 1_frame, minY, maxY);
+    m_headRotation.Y = std::clamp(m_headRotation.Y + y * 1_rframe, minY, maxY);
   }
 
   const core::TRRotation& getHeadRotation() const noexcept
@@ -311,8 +315,8 @@ public:
   void handleUnderwaterCurrent(CollisionInfo& collisionInfo);
 
   std::optional<core::Axis> hit_direction;
-  core::Frame hit_frame = 0_frame;
-  core::Frame explosionStumblingDuration = 0_frame;
+  core::RenderFrame hit_frame = 0_rframe;
+  core::RenderFrame explosionStumblingDuration = 0_rframe;
   const core::TRVec* forceSourcePosition = nullptr;
 
   void updateExplosionStumbling();
@@ -323,10 +327,10 @@ public:
     const size_t thighBoneId;
 
     const loader::file::AnimFrame* weaponAnimData = nullptr;
-    core::Frame frame = 0_frame;
+    core::RenderFrame frame = 0_rframe;
     bool aiming = false;
     core::TRRotationXY aimRotation{};
-    core::Frame flashTimeout = 0_frame;
+    core::RenderFrame flashTimeout = 0_rframe;
 
     void update(LaraObject& lara, const Weapon& weapon);
     void holsterWeapons(LaraObject& lara, WeaponType weaponType);
@@ -336,7 +340,7 @@ public:
 
     void reset()
     {
-      frame = 0_frame;
+      frame = 0_rframe;
       aiming = false;
       aimRotation.X = 0_deg;
       aimRotation.Y = 0_deg;
